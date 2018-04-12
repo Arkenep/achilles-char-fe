@@ -1,19 +1,19 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-
 import {AppComponent} from './app.component';
 import {RouterModule, Routes} from '@angular/router';
-import {HttpClientModule} from '@angular/common/http';
-import {MaterialModules} from './shared/material.module';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {MaterialModule} from './shared/material.module';
 
 import {LoginService} from './services/login.service';
 import {CharacterListComponent} from './modules/character/character-list/character-list.component';
 import {CharacterComponent} from './modules/character/character/character.component';
-import {LoginComponent} from './modules/login/login.component';
 import {MatNativeDateModule} from '@angular/material';
+import {ToolbarComponent} from './modules/toolbar/toolbar.component';
+import {LoginDialogComponent} from './modules/login-dialog/login-dialog.component';
+import {AuthHttpInterceptor} from './shared/auth.interceptor';
 
 const appRoutes: Routes = [
   {path: 'character-list', component: CharacterListComponent},
@@ -23,7 +23,7 @@ const appRoutes: Routes = [
     redirectTo: '/character-list',
     pathMatch: 'full'
   },
-  {path: '**', component: LoginComponent}
+  {path: '**', component: CharacterListComponent}
 ];
 
 
@@ -32,8 +32,12 @@ const appRoutes: Routes = [
     AppComponent,
     CharacterListComponent,
     CharacterComponent,
-    LoginComponent,
+    LoginDialogComponent,
+    ToolbarComponent,
 
+  ],
+  entryComponents: [
+    LoginDialogComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -46,7 +50,7 @@ const appRoutes: Routes = [
     HttpClientModule,
 
     // Angular material modules
-    MaterialModules,
+    MaterialModule,
     MatNativeDateModule,
 
     ReactiveFormsModule,
@@ -54,7 +58,11 @@ const appRoutes: Routes = [
   ],
   providers: [
     LoginService,
-
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthHttpInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

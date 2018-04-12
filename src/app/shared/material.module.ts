@@ -64,4 +64,4 @@ import {NgModule} from '@angular/core';
 
   ]
 })
-export class MaterialModules {}
+export class MaterialModule {}
